@@ -7,9 +7,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float acceleration = 10f;
 
+    [Header("Physics Settings")]
+    [SerializeField] private float buoyancyForce = 2f;
+    [SerializeField] private float waterDrag = 0.95f;
+    [SerializeField] private float surfaceDrag = 0.98f;
+    [SerializeField] private bool enableBuoyancy = true;
+
     [Header("Debug Info")]
     [SerializeField] private Vector2 currentVelocity;
     [SerializeField] private Vector2 moveInput;
+    [SerializeField] private bool isUnderwater = true;
 
     private Rigidbody2D rb;
     private PlayerZoneDetector zoneDetector;
@@ -33,8 +40,31 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        UpdateZoneStatus();
+        ApplyPhysics();
         MovePlayer();
         currentVelocity = rb.velocity;
+    }
+
+    void UpdateZoneStatus()
+    {
+        if (zoneDetector != null)
+        {
+            isUnderwater = zoneDetector.IsUnderwater;
+        }
+    }
+
+    void ApplyPhysics()
+    {
+        // Apply buoyancy force when underwater
+        if (enableBuoyancy && isUnderwater)
+        {
+            rb.AddForce(Vector2.up * buoyancyForce, ForceMode2D.Force);
+        }
+
+        // Apply drag based on zone
+        float dragMultiplier = isUnderwater ? waterDrag : surfaceDrag;
+        rb.velocity *= dragMultiplier;
     }
 
     void MovePlayer()

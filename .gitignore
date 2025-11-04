@@ -102,3 +102,6 @@ InitTestScene*.unity*
 .DS_Store
 *.swp
 *~
+
+# Claude Code local directory
+.claude/

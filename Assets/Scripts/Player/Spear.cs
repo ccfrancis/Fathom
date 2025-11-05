@@ -64,14 +64,8 @@ public class Spear : MonoBehaviour
 
     bool HasTag(Collider2D collider, string tag)
     {
-        try
-        {
-            return collider.CompareTag(tag);
-        }
-        catch
-        {
-            return false;
-        }
+        // Check if tag exists and matches
+        return collider.tag == tag;
     }
 
     bool IsTerrainOrObstacle(Collider2D collider)

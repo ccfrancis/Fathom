@@ -61,6 +61,13 @@ public class FishSpawner : MonoBehaviour
         GameObject fishObj = Instantiate(fishPrefab, spawnPosition, Quaternion.identity);
         fishObj.transform.parent = transform; // Organize under spawner
 
+        // Register fish with inventory system
+        Fish fish = fishObj.GetComponent<Fish>();
+        if (fish != null && FishInventory.Instance != null)
+        {
+            FishInventory.Instance.RegisterFish(fish);
+        }
+
         currentFishCount++;
         Debug.Log($"Spawned fish at {spawnPosition}. Total fish: {currentFishCount}");
     }

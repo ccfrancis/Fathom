@@ -106,7 +106,11 @@ public class SpearGun : MonoBehaviour
     Vector2 GetFireDirection()
     {
         // Check if player is facing left (flipped)
-        bool isFacingLeft = transform.localScale.x < 0 || transform.parent.localScale.x < 0;
+        bool isFacingLeft = transform.localScale.x < 0;
+        if (transform.parent != null)
+        {
+            isFacingLeft = isFacingLeft || transform.parent.localScale.x < 0;
+        }
 
         // Get player rotation for tilt
         float rotationZ = transform.rotation.eulerAngles.z;

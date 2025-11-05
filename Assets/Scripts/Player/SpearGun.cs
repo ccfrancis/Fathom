@@ -14,7 +14,8 @@ public class SpearGun : MonoBehaviour
 
     [Header("Firing Settings")]
     [SerializeField] private float fireRate = 0.5f; // Time between shots
-    [SerializeField] private KeyCode fireKey = KeyCode.Space;
+    [SerializeField] private bool useMouseButton = true; // Use mouse button instead of key
+    [SerializeField] private KeyCode fireKey = KeyCode.E; // Fallback key if not using mouse
 
     [Header("Debug Info")]
     [SerializeField] private float lastFireTime = -999f;
@@ -38,7 +39,18 @@ public class SpearGun : MonoBehaviour
 
     void HandleInput()
     {
-        if (Input.GetKeyDown(fireKey) && CanFire)
+        bool firePressed = false;
+
+        if (useMouseButton)
+        {
+            firePressed = Input.GetMouseButtonDown(0); // Left mouse button
+        }
+        else
+        {
+            firePressed = Input.GetKeyDown(fireKey);
+        }
+
+        if (firePressed && CanFire)
         {
             FireSpear();
         }

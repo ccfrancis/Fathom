@@ -44,39 +44,43 @@ public class Spear : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Don't collide with player
-        if (other.CompareTag("Player"))
+        // Don't collide with player (safe tag check)
+        if (HasTag(other, "Player"))
         {
             return;
         }
 
         // Check if we hit a fish
-        if (other.CompareTag("Fish"))
+        if (HasTag(other, "Fish"))
         {
             HitFish(other);
         }
-        // Check if we hit terrain (using try-catch to avoid tag errors)
+        // Check if we hit terrain
         else if (IsTerrainOrObstacle(other))
         {
             HitTerrain();
         }
     }
 
-    bool IsTerrainOrObstacle(Collider2D collider)
+    bool HasTag(Collider2D collider, string tag)
     {
-        // Check common terrain/obstacle tags safely
         try
         {
-            return collider.CompareTag("Terrain") ||
-                   collider.CompareTag("Obstacle") ||
-                   collider.CompareTag("Wall") ||
-                   collider.CompareTag("Ground");
+            return collider.CompareTag(tag);
         }
         catch
         {
-            // If tag doesn't exist, ignore it
             return false;
         }
+    }
+
+    bool IsTerrainOrObstacle(Collider2D collider)
+    {
+        // Check common terrain/obstacle tags safely
+        return HasTag(collider, "Terrain") ||
+               HasTag(collider, "Obstacle") ||
+               HasTag(collider, "Wall") ||
+               HasTag(collider, "Ground");
     }
 
     void HitFish(Collider2D fishCollider)

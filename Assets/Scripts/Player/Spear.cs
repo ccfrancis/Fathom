@@ -55,10 +55,27 @@ public class Spear : MonoBehaviour
         {
             HitFish(other);
         }
-        // Check if we hit terrain/obstacles
-        else if (other.CompareTag("Terrain") || other.CompareTag("Obstacle"))
+        // Check if we hit terrain (using try-catch to avoid tag errors)
+        else if (IsTerrainOrObstacle(other))
         {
             HitTerrain();
+        }
+    }
+
+    bool IsTerrainOrObstacle(Collider2D collider)
+    {
+        // Check common terrain/obstacle tags safely
+        try
+        {
+            return collider.CompareTag("Terrain") ||
+                   collider.CompareTag("Obstacle") ||
+                   collider.CompareTag("Wall") ||
+                   collider.CompareTag("Ground");
+        }
+        catch
+        {
+            // If tag doesn't exist, ignore it
+            return false;
         }
     }
 

@@ -83,16 +83,21 @@ public class PlayerController : MonoBehaviour
 
         if (moveInput.magnitude > 0.1f)
         {
+            // Track if we're facing left (flipped)
+            bool isFacingLeft = transform.localScale.x < 0;
+
             // Handle horizontal flipping while maintaining base scale
             if (moveInput.x < -0.1f)
             {
                 // Moving left - flip to face backward
                 transform.localScale = new Vector3(-baseScale.x, baseScale.y, baseScale.z);
+                isFacingLeft = true;
             }
             else if (moveInput.x > 0.1f)
             {
                 // Moving right - face forward
                 transform.localScale = baseScale;
+                isFacingLeft = false;
             }
 
             // Handle vertical tilt (max 45 degrees)
@@ -100,8 +105,13 @@ public class PlayerController : MonoBehaviour
             if (Mathf.Abs(moveInput.y) > 0.1f)
             {
                 // Normalize vertical input to -1 to 1 range and multiply by 45
-                // Positive input (up) should tilt up, negative (down) should tilt down
                 tiltAngle = Mathf.Clamp(moveInput.y, -1f, 1f) * 45f;
+
+                // Invert tilt when facing left so it matches visual direction
+                if (isFacingLeft)
+                {
+                    tiltAngle = -tiltAngle;
+                }
             }
 
             transform.rotation = Quaternion.Euler(0, 0, tiltAngle);

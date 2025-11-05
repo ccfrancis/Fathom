@@ -118,6 +118,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Increase move speed (for upgrades)
+    /// </summary>
+    public void IncreaseMoveSpeed(float amount)
+    {
+        moveSpeed += amount;
+        Debug.Log($"Move speed increased to {moveSpeed}");
+    }
+
     void OnDrawGizmos()
     {
         if (Application.isPlaying && moveInput.magnitude > 0.1f)

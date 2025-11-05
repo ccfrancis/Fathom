@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float surfaceDrag = 0.98f;
     [SerializeField] private bool enableBuoyancy = true;
 
+    [Header("Visual Settings")]
+    [SerializeField] private float playerScale = 2f;
+
     [Header("Debug Info")]
     [SerializeField] private Vector2 currentVelocity;
     [SerializeField] private Vector2 moveInput;
@@ -20,11 +23,16 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private PlayerZoneDetector zoneDetector;
+    private Vector3 baseScale;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         zoneDetector = GetComponent<PlayerZoneDetector>();
+
+        // Set initial scale
+        baseScale = new Vector3(playerScale, playerScale, 1f);
+        transform.localScale = baseScale;
     }
 
     void Update()
@@ -75,16 +83,16 @@ public class PlayerController : MonoBehaviour
 
         if (moveInput.magnitude > 0.1f)
         {
-            // Handle horizontal flipping
+            // Handle horizontal flipping while maintaining base scale
             if (moveInput.x < -0.1f)
             {
                 // Moving left - flip to face backward
-                transform.localScale = new Vector3(-1, 1, 1);
+                transform.localScale = new Vector3(-baseScale.x, baseScale.y, baseScale.z);
             }
             else if (moveInput.x > 0.1f)
             {
                 // Moving right - face forward
-                transform.localScale = new Vector3(1, 1, 1);
+                transform.localScale = baseScale;
             }
 
             // Handle vertical tilt (max 45 degrees)
@@ -92,10 +100,11 @@ public class PlayerController : MonoBehaviour
             if (Mathf.Abs(moveInput.y) > 0.1f)
             {
                 // Normalize vertical input to -1 to 1 range and multiply by 45
+                // Positive input (up) should tilt up, negative (down) should tilt down
                 tiltAngle = Mathf.Clamp(moveInput.y, -1f, 1f) * 45f;
             }
 
-            transform.rotation = Quaternion.Euler(0, 0, -tiltAngle);
+            transform.rotation = Quaternion.Euler(0, 0, tiltAngle);
         }
     }
 

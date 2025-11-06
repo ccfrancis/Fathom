@@ -42,9 +42,14 @@ public class Shop : MonoBehaviour
             playerController = FindObjectOfType<PlayerController>();
         }
 
-        // Initialize default upgrade (swim speed)
-        if (availableUpgrades.Count == 0)
+        // Initialize default upgrade (swim speed) if list is null or empty
+        if (availableUpgrades == null || availableUpgrades.Count == 0)
         {
+            if (availableUpgrades == null)
+            {
+                availableUpgrades = new List<ShopUpgrade>();
+            }
+
             availableUpgrades.Add(new ShopUpgrade
             {
                 name = "Faster Swim Fins",

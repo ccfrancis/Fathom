@@ -79,9 +79,17 @@ public class OxygenBar : MonoBehaviour
     {
         isLowOxygen = isLow;
 
-        if (fillImage != null && !animateLowOxygen)
+        // Reset color when oxygen is no longer low
+        if (fillImage != null)
         {
-            fillImage.color = isLow ? lowOxygenColor : normalColor;
+            if (!isLow)
+            {
+                fillImage.color = normalColor;
+            }
+            else if (!animateLowOxygen)
+            {
+                fillImage.color = lowOxygenColor;
+            }
         }
     }
 }

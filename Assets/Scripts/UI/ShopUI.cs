@@ -41,21 +41,21 @@ public class ShopUI : MonoBehaviour
         if (sellButton != null)
         {
             sellButton.onClick.AddListener(OnSellButtonClicked);
+            Debug.Log("Sell button listener added");
+        }
+        else
+        {
+            Debug.LogError("ShopUI: Sell button reference is missing!");
         }
 
         if (upgradeButton != null)
         {
             upgradeButton.onClick.AddListener(OnUpgradeButtonClicked);
+            Debug.Log("Upgrade button listener added");
         }
-
-        // Load first upgrade
-        if (shop != null)
+        else
         {
-            var upgrades = shop.GetAvailableUpgrades();
-            if (upgrades.Count > 0)
-            {
-                currentUpgrade = upgrades[0];
-            }
+            Debug.LogError("ShopUI: Upgrade button reference is missing!");
         }
 
         HideShop();
@@ -76,6 +76,21 @@ public class ShopUI : MonoBehaviour
         if (shopPanel != null)
         {
             shopPanel.SetActive(true);
+        }
+
+        // Load available upgrades when shop opens
+        if (shop != null)
+        {
+            var upgrades = shop.GetAvailableUpgrades();
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                currentUpgrade = upgrades[0];
+                Debug.Log($"Loaded upgrade: {currentUpgrade.name}");
+            }
+            else
+            {
+                Debug.LogWarning("No upgrades available in shop!");
+            }
         }
 
         UpdateUI();
@@ -152,12 +167,30 @@ public class ShopUI : MonoBehaviour
 
     void OnUpgradeButtonClicked()
     {
-        if (shop != null && currentUpgrade != null)
+        Debug.Log("Upgrade button clicked!");
+
+        if (shop == null)
         {
-            if (shop.BuyUpgrade(currentUpgrade))
-            {
-                UpdateUI();
-            }
+            Debug.LogError("Shop reference is null!");
+            return;
+        }
+
+        if (currentUpgrade == null)
+        {
+            Debug.LogError("Current upgrade is null!");
+            return;
+        }
+
+        Debug.Log($"Attempting to buy {currentUpgrade.name} for {currentUpgrade.cost} coins");
+
+        if (shop.BuyUpgrade(currentUpgrade))
+        {
+            Debug.Log("Upgrade purchased successfully!");
+            UpdateUI();
+        }
+        else
+        {
+            Debug.Log("Failed to purchase upgrade");
         }
     }
 
